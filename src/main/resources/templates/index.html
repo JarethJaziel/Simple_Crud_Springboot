@@ -30,6 +30,16 @@
     <div class="container mt-5">
         <h1>Lista de Usuarios</h1>
 
+        <form class="d-flex mb-3" role="search" action="/" method="get">
+            <input class="form-control me-2" type="search" name="keyword" 
+                   placeholder="Buscar por nombre o email..." 
+                   th:value="${keyword}" aria-label="Search">
+            
+            <button class="btn btn-outline-success" type="submit">Buscar</button>
+            
+            <a href="/" class="btn btn-outline-secondary ms-2">Todos</a>
+        </form>
+
         <div class="mb-3">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarModal">
                 Agregar Usuario
@@ -39,6 +49,8 @@
                 data-bs-target="#eliminarModal" onclick="prepareBatchDelete()" disabled>
                 Eliminar Seleccionados
             </button>
+
+            <a th:href="@{/export/pdf}" class="btn btn-secondary">Exportar a PDF</a>
         </div>
 
         <table class="table table-bordered table-striped">
