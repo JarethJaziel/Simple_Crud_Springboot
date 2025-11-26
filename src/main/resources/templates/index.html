@@ -1,22 +1,53 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .fila-seleccionada {
+            background-color: #4f5762 !important;
+        }
+
+        tbody tr {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        tbody tr:hover {
+            background-color: #e2e6ea;
+        }
+
+        .check-seleccion {
+            pointer-events: none;
+        }
+    </style>
 </head>
+
 <body>
     <div class="container mt-5">
         <h1>Lista de Usuarios</h1>
-        
-        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#agregarModal">
-            Agregar Usuario
-        </button>
+
+        <div class="mb-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarModal">
+                Agregar Usuario
+            </button>
+
+            <button type="button" id="btnEliminarGlobal" class="btn btn-danger" data-bs-toggle="modal"
+                data-bs-target="#eliminarModal" onclick="prepareBatchDelete()" disabled>
+                Eliminar Seleccionados
+            </button>
+        </div>
 
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
                 <tr>
+                    <th>
+                        <input type="checkbox" id="selectAllCheckbox" class="form-check-input"
+                            onclick="toggleSelectAll(this)">
+                    </th>
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Email</th>
@@ -26,29 +57,24 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="user : ${users}">
+                <tr th:each="user : ${users}" onclick="toggleRowSelection(this)" th:data-id="${user.id}">
+                    <td>
+                        <input type="checkbox" class="form-check-input check-seleccion">
+                    </td>
                     <td th:text="${user.id}"></td>
                     <td th:text="${user.name}"></td>
                     <td th:text="${user.email}"></td>
                     <td th:text="${user.phone}"></td>
                     <td th:text="${user.age}"></td>
-                    <td>
-                        <button type="button" class="btn btn-warning btn-sm" 
-                            data-bs-toggle="modal" data-bs-target="#editarModal"
-                            th:data-id="${user.id}"
-                            th:data-name="${user.name}"
-                            th:data-email="${user.email}"
-                            th:data-phone="${user.phone}"
-                            th:data-age="${user.age}"
+                    <td onclick="event.stopPropagation()">
+                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#editarModal" th:data-id="${user.id}" th:data-name="${user.name}"
+                            th:data-email="${user.email}" th:data-phone="${user.phone}" th:data-age="${user.age}"
                             onclick="fillEditModal(this)"> Editar
                         </button>
 
-                        <a href="#" 
-                            th:data-id="${user.id}" 
-                            class="btn btn-danger btn-sm" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#eliminarModal"
-                            onclick="updateDeleteModalHref(this)">
+                        <a href="#" th:data-id="${user.id}" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#eliminarModal" onclick="prepareSingleDelete(this)">
                             Eliminar
                         </a>
                     </td>
@@ -60,36 +86,36 @@
     <div class="modal fade" id="agregarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Nuevo Usuario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            
-            <div class="modal-body">
-                <form th:action="@{/save}" th:object="${user}" method="post">
-                    <div class="mb-3">
-                        <label>Nombre:</label>
-                        <input type="text" th:field="*{name}" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Email:</label>
-                        <input type="email" th:field="*{email}" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Teléfono:</label>
-                        <input type="text" th:field="*{phone}" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Edad:</label>
-                        <input type="number" th:field="*{age}" class="form-control">
-                    </div>
-                    
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                    </div>
-                </form>
-            </div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Nuevo Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form th:action="@{/save}" th:object="${user}" method="post">
+                        <div class="mb-3">
+                            <label>Nombre:</label>
+                            <input type="text" th:field="*{name}" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Email:</label>
+                            <input type="email" th:field="*{email}" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Teléfono:</label>
+                            <input type="text" th:field="*{phone}" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Edad:</label>
+                            <input type="number" th:field="*{age}" class="form-control">
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -103,7 +129,7 @@
                 </div>
                 <div class="modal-body">
                     <form th:action="@{/save}" method="post">
-                        
+
                         <input type="hidden" name="id" id="editId">
 
                         <div class="mb-3">
@@ -122,7 +148,7 @@
                             <label>Edad:</label>
                             <input type="number" name="age" id="editAge" class="form-control">
                         </div>
-                        
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                             <button type="submit" class="btn btn-primary">Actualizar</button>
@@ -141,17 +167,65 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    ¿Estás seguro de que deseas eliminar este usuario?
+                    <p id="mensajeEliminar">¿Estás seguro de que deseas eliminar este usuario?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <a id="btnConfirmarEliminar" href="#" class="btn btn-danger">Sí, Eliminar</a>
+
+                    <form id="formEliminarIndividual" th:action="@{/delete}" method="post" style="display:none;">
+                        <input type="hidden" name="id" id="inputId">
+                        <button type="submit" class="btn btn-danger">Sí, Eliminar Usuario</button>
+                    </form>
+                    <form id="formEliminarBatch" th:action="@{/delete-batch}" method="post" style="display:none;">
+                        <input type="hidden" name="ids" id="inputBatchIds">
+                        <button type="submit" class="btn btn-danger">Sí, Eliminar Selección</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+
+        function toggleRowSelection(fila) {
+            fila.classList.toggle("fila-seleccionada");
+
+            var checkbox = fila.querySelector(".check-seleccion");
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+            }
+
+            updateGlobalButton();
+        }
+
+        function toggleSelectAll(source) {
+            var checkboxes = document.querySelectorAll('.check-seleccion');
+            var filas = document.querySelectorAll('tbody tr');
+
+            checkboxes.forEach(function (checkbox, index) {
+                checkbox.checked = source.checked;
+                if (source.checked) {
+                    filas[index].classList.add("fila-seleccionada");
+                } else {
+                    filas[index].classList.remove("fila-seleccionada");
+                }
+            });
+            updateGlobalButton();
+        }
+
+        function updateGlobalButton() {
+            var seleccionados = document.querySelectorAll('.check-seleccion:checked');
+            var btnGlobal = document.getElementById('btnEliminarGlobal');
+
+            if (seleccionados.length > 0) {
+                btnGlobal.disabled = false;
+                btnGlobal.innerText = "Eliminar (" + seleccionados.length + ")";
+            } else {
+                btnGlobal.disabled = true;
+                btnGlobal.innerText = "Eliminar";
+            }
+        }
+
         function fillEditModal(boton) {
             var id = boton.getAttribute('data-id');
             var name = boton.getAttribute('data-name');
@@ -166,11 +240,70 @@
             document.getElementById('editAge').value = age;
         }
 
-        function updateDeleteModalHref(boton) {
-            var id = boton.getAttribute('data-id');
-            var enlace = document.getElementById('btnConfirmarEliminar');
-            enlace.href = "/delete/" + id;
+        function prepareSingleDelete(boton) {
+            document.getElementById('inputId').value = boton.getAttribute('data-id');
+
+            document.getElementById('formEliminarIndividual').style.display = 'block';
+            document.getElementById('formEliminarBatch').style.display = 'none';
+
+            document.getElementById('mensajeEliminar').innerText = "¿Eliminar usuario ID: " + id + "?";
+        }
+
+        function prepareBatchDelete() {
+            var filasSeleccionadas = document.querySelectorAll('tbody tr.fila-seleccionada');
+            var ids = [];
+
+            filasSeleccionadas.forEach(function (fila) {
+                ids.push(fila.getAttribute('data-id'));
+            });
+
+            document.getElementById('formEliminarIndividual').style.display = 'none';
+            document.getElementById('formEliminarBatch').style.display = 'block';
+
+            document.getElementById('inputBatchIds').value = ids.join(",");
+            document.getElementById('mensajeEliminar').innerText = "¿Eliminar los " + ids.length + " usuarios seleccionados?";
+        }
+
+        function selectRow(row) {
+            var rows = document.querySelectorAll("tbody tr");
+
+            rows.forEach(function (r) {
+                r.classList.remove("fila-seleccionada");
+            });
+
+            row.classList.add("fila-seleccionada");
+
+            var checkboxes = document.querySelectorAll(".check-seleccion");
+            checkboxes.forEach(function (c) {
+                c.checked = false;
+            });
+
+            var thisRowCheckbox = row.querySelector(".check-seleccion");
+            if (thisRowCheckbox) {
+                thisRowCheckbox.checked = true;
+            }
+
+            var id = row.getAttribute('data-id');
+            var name = row.getAttribute('data-name');
+            var email = row.getAttribute('data-email');
+            var phone = row.getAttribute('data-phone');
+            var age = row.getAttribute('data-age');
+
+            var btnEditar = document.getElementById('btnEditarGlobal');
+            var btnEliminar = document.getElementById('btnEliminarGlobal');
+
+            btnEditar.disabled = false;
+            btnEliminar.disabled = false;
+
+            btnEditar.setAttribute('data-id', id);
+            btnEditar.setAttribute('data-name', name);
+            btnEditar.setAttribute('data-email', email);
+            btnEditar.setAttribute('data-phone', phone);
+            btnEditar.setAttribute('data-age', age);
+
+            btnEliminar.setAttribute('data-id', id);
         }
     </script>
 </body>
+
 </html>
