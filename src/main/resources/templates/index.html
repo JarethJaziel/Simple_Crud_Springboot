@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Lista de Usuarios</h1>
+        
+        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#agregarModal">
+            Agregar Usuario
+        </button>
+
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Edad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.phone}"></td>
+                    <td th:text="${user.age}"></td>
+                    <td>
+                        <button type="button" class="btn btn-warning btn-sm" 
+                            data-bs-toggle="modal" data-bs-target="#editarModal"
+                            th:data-id="${user.id}"
+                            th:data-name="${user.name}"
+                            th:data-email="${user.email}"
+                            th:data-phone="${user.phone}"
+                            th:data-age="${user.age}"
+                            onclick="fillEditModal(this)"> Editar
+                        </button>
+
+                        <a href="#" 
+                            th:data-id="${user.id}" 
+                            class="btn btn-danger btn-sm" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#eliminarModal"
+                            onclick="updateDeleteModalHref(this)">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Modal agregar usuario -->
+    <div class="modal fade" id="agregarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Nuevo Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body">
+                <form th:action="@{/save}" th:object="${newUser}" method="post">
+                    <div class="mb-3">
+                        <label>Nombre:</label>
+                        <input type="text" th:field="*{name}" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Email:</label>
+                        <input type="email" th:field="*{email}" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Teléfono:</label>
+                        <input type="text" th:field="*{phone}" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Edad:</label>
+                        <input type="number" th:field="*{age}" class="form-control">
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal editar usuario -->
+    <div class="modal fade" id="editarModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/save}" method="post">
+                        
+                        <input type="hidden" name="id" id="editId">
+
+                        <div class="mb-3">
+                            <label>Nombre:</label>
+                            <input type="text" name="name" id="editName" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Email:</label>
+                            <input type="email" name="email" id="editEmail" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Teléfono:</label>
+                            <input type="text" name="phone" id="editPhone" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Edad:</label>
+                            <input type="number" name="age" id="editAge" class="form-control">
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Actualizar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal eliminar usuario -->
+    <div class="modal fade" id="eliminarModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar este usuario?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <a id="btnConfirmarEliminar" href="#" class="btn btn-danger">Sí, Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function fillEditModal(boton) {
+            var id = boton.getAttribute('data-id');
+            var name = boton.getAttribute('data-name');
+            var email = boton.getAttribute('data-email');
+            var phone = boton.getAttribute('data-phone');
+            var age = boton.getAttribute('data-age');
+
+            document.getElementById('editId').value = id;
+            document.getElementById('editName').value = name;
+            document.getElementById('editEmail').value = email;
+            document.getElementById('editPhone').value = phone;
+            document.getElementById('editAge').value = age;
+        }
+
+        function updateDeleteModalHref(boton) {
+            var id = boton.getAttribute('data-id');
+            var enlace = document.getElementById('btnConfirmarEliminar');
+            enlace.href = "/delete/" + id;
+        }
+    </script>
+</body>
+</html>
