@@ -147,7 +147,7 @@ public class UserController {
      * los bytes del archivo PDF al cliente.
      */
     @GetMapping("/export/pdf")
-    public void exportToPDF(HttpServletResponse response) throws IOException {
+    public void exportToPDF(HttpServletResponse response) {
         response.setContentType("application/pdf");
         
         String headerKey = "Content-Disposition";
@@ -157,7 +157,11 @@ public class UserController {
         List<User> listUsers = userRepository.findAll();
 
         UserPDFExporter exporter = new UserPDFExporter(listUsers);
-        exporter.export(response);
+        try {
+            exporter.export(response);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
 }
