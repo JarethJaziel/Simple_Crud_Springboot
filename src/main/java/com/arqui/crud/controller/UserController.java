@@ -26,8 +26,10 @@ import org.springframework.web.bind.annotation.RequestParam;
  * Este controlador maneja las peticiones web, interactúa con la base de datos
  * a través del repositorio y decide qué vista (HTML) mostrar al usuario.
  * </p>
- *
- * @author Jaret
+ * 
+ * @author Braulio Cuevas
+ * @author Mauricio Dzay
+ * @author Jareth Moo
  * @version 1.0
  */
 

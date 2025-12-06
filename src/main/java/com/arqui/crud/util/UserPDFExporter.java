@@ -33,7 +33,9 @@ import jakarta.servlet.http.HttpServletResponse;
  * <li>Tabla con anchos de columna dinámicos.</li>
  * <li>Filas con colores alternados ("Zebra Striping") para facilitar la lectura.</li>
  * </ul>
- * * @author Jaret
+ * @author Braulio Cuevas
+ * @author Mauricio Dzay
+ * @author Jareth Moo
  * @version 2.0
  */
 public class UserPDFExporter {

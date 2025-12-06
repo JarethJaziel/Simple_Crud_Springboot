@@ -27,7 +27,9 @@ import com.arqui.crud.entity.User;
  *
  * @see JpaRepository
  * @see User
- * @author Jaret
+ * @author Braulio Cuevas
+ * @author Mauricio Dzay
+ * @author Jareth Moo
  * @version 1.0
  */
 @Repository

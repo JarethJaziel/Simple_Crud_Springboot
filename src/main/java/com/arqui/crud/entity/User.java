@@ -16,7 +16,9 @@ import lombok.Data;
  * los métodos getters, setters, toString, equals y hashCode durante la compilación.
  * </p>
  *
- * @author Jaret
+ * @author Braulio Cuevas
+ * @author Mauricio Dzay
+ * @author Jareth Moo
  * @version 1.0
  */
 @Data

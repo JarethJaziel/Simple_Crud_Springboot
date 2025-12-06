@@ -15,7 +15,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * <li><b>@ComponentScan:</b> Busca automáticamente otros componentes (Controladores, Servicios, Repositorios) en el paquete actual y sus subpaquetes.</li>
  * </ul>
  *
- * @author Jaret
+ * @author Braulio Cuevas
+ * @author Mauricio Dzay
+ * @author Jareth Moo
  * @version 1.0
  */
 @SpringBootApplication
