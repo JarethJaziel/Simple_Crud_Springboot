@@ -145,8 +145,6 @@ public class UserController {
      * @param response Objeto {@link HttpServletResponse} inyectado por Spring.
      * Es fundamental aquí porque permite escribir directamente en el {@code OutputStream}
      * del navegador, saltándose el motor de plantillas Thymeleaf.
-     * @throws IOException Si ocurre un error de entrada/salida al intentar generar o transmitir
-     * los bytes del archivo PDF al cliente.
      */
     @GetMapping("/export/pdf")
     public void exportToPDF(HttpServletResponse response) {
