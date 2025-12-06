@@ -14,7 +14,7 @@ import com.arqui.crud.entity.User;
  * Al extender de {@link JpaRepository}, hereda automáticamente una amplia gama de funcionalidades
  * sin necesidad de escribir sentencias SQL manualmente.
  * </p>
- * * <h3>Características principales:</h3>
+ * * <b>Características principales:</b>
  * <ul>
  * <li><b>CRUD Estándar:</b> Métodos listos para usar como save(), findById(), findAll(), deleteById().</li>
  * <li><b>Paginación y Ordenamiento:</b> Soporte nativo para devolver datos paginados (Page/Pageable).</li>

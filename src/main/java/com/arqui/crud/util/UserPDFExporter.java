@@ -27,7 +27,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * Esta clase utiliza la librería <b>OpenPDF</b> (basada en iText) para construir
  * un documento visualmente estilizado con formato corporativo.
  * </p>
- * <h3>Características del diseño:</h3>
+ * * <b>Características del diseño</b>
  * <ul>
  * <li>Paleta de colores personalizada (Azul oscuro, Azul brillante, Gris suave).</li>
  * <li>Tabla con anchos de columna dinámicos.</li>
@@ -61,11 +61,13 @@ public class UserPDFExporter {
      * Método principal que orquesta la creación y escritura del documento PDF.
      * <p>
      * Define la estructura del documento en el siguiente orden:
+     * </p>
      * <ol>
      * <li>Título del reporte (Centrado y grande).</li>
      * <li>Fecha y hora de generación (Subtítulo gris).</li>
      * <li>Tabla de datos con 5 columnas y anchos relativos definidos.</li>
      * </ol>
+     * <p>
      * Finalmente, escribe los bytes resultantes directamente en el flujo de salida de la respuesta HTTP.
      * </p>
      *
